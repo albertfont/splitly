@@ -38,17 +38,17 @@ Permet registrar despeses, calcular balanços i compartir l’accés amb els par
 
 2. Crea i activa un entorn virtual:
 
-```bash
-python3 -m venv venv
-source venv/bin/activate   # Linux/Mac
-venv\Scripts\activate      # Windows
-```
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate   # Linux/Mac
+   venv\Scripts\activate      # Windows
+   ```
 
 3. Instal·la les dependències:
 
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 4. Configura la base de dades i les variables d’entorn:
 
@@ -57,9 +57,9 @@ pip install -r requirements.txt
 
 5. Executa l’aplicació en mode desenvolupament:
 
-```bash
-flask run
-```
+   ```bash
+   flask run
+   ```
 Per defecte l’aplicació estarà disponible a http://127.0.0.1:5000
 
 ## Desplegament en producció
@@ -71,9 +71,9 @@ Per a desplegar en producció es recomana utilitzar:
 
 Exemple amb Gunicorn:
 
-```bash
-gunicorn -w 4 'app:app'
-```
+   ```bash
+   gunicorn -w 4 'app:app'
+   ```
 
 ## Contribució
 Les contribucions són benvingudes.
