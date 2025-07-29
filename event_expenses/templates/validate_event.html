@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+  {% if event %}
+    <h2>L'event "{{ event.name }}" ha estat validat!</h2>
+    <p>Pots començar a afegir participants i despeses.</p>
+    <div class="mt-4">
+      <a href="{{ url_for('manage_group', event_token=event.token) }}" class="btn btn-primary">
+        <i class="fas fa-users"></i> Gestionar participants
+      </a>
+      <a href="{{ url_for('add_expense', event_token=event.token) }}" class="btn btn-secondary ms-2">
+        <i class="fas fa-receipt"></i> Afegir despeses
+      </a>
+    </div>
+  {% else %}
+    <h2>Validació fallida</h2>
+    <p>No s'ha pogut validar aquest event.</p>
+  {% endif %}
+{% endblock %}

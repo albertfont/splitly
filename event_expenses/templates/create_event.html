@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4 position-relative">
+  <div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+      <h4 class="mb-0">Crear un nou event</h4>
+    </div>
+    <div class="card-body">
+      <form method="POST" action="{{ url_for('create_new_event') }}">
+        {% if event_form.errors %}
+          <div class="alert alert-danger">
+            <strong>Hi ha errors al formulari:</strong>
+            <ul>
+              {% for field in event_form %}
+                {% for error in field.errors %}
+                  <li>{{ field.label.text }}: {{ error }}</li>
+                {% endfor %}
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+        {{ event_form.hidden_tag() }}
+        <div class="mb-3">
+          {{ event_form.name.label(class="form-label") }}
+          {{ event_form.name(class="form-control", placeholder="Nom de l'event") }}
+        </div>
+        <div class="mb-3">
+          {{ event_form.description.label(class="form-label") }}
+          {{ event_form.description(class="form-control", placeholder="Descripcio") }}
+        </div>
+        <div class="mb-3">
+          {{ event_form.email.label(class="form-label") }}
+          {{ event_form.email(class="form-control", placeholder="Correu electrònic") }}
+        </div>
+        {{ event_form.submit(class="btn btn-primary", type="submit") }}
+        <a href="{{ url_for('home') }}" class="btn btn-secondary ms-2">
+          <i class="fas fa-arrow-left"></i> Cancel·lar
+        </a>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div id="loadingOverlay" class="loading-overlay d-none">
+    <div class="loading-text">
+      <div class="spinner-border text-light mb-2" role="status"></div>
+      <div>Creant event...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Script -->
+<script>
+  document.querySelector('form').addEventListener('submit', function () {
+    document.querySelector('.card').classList.add('form-blurred');
+    document.getElementById('loadingOverlay').classList.remove('d-none');
+    thiis.submit
+    this.submit();
+  });
+</script>
+{% endblock %}

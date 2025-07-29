@@ -1,0 +1,31 @@
+<form method="POST" action="{% if edit %}{{ url_for('edit_expense', expense_id=expense_id) }}{% else %}{{ url_for('add_expense', event_token=event.token) }}{% endif %}">
+  {{ form.hidden_tag() }}
+  <div class="mb-3">
+    {{ form.description.label(class="form-label") }}
+    {{ form.description(class="form-control") }}
+  </div>
+  <div class="mb-3">
+    {{ form.amount.label(class="form-label") }}
+    {{ form.amount(class="form-control") }}
+  </div>
+  <div class="mb-3">
+    {{ form.payer_id.label(class="form-label") }}
+    {{ form.payer_id(class="form-select") }}
+  </div>
+  <div class="mb-3">
+    {{ form.split_between.label(class="form-label") }}
+    <div class="mb-2">
+      <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleAll()">
+        Marcar tots
+      </button>
+    </div>
+    {% for subfield in form.split_between %}
+      <div class="form-check">
+        {{ subfield(class="form-check-input participant-checkbox") }}
+        <label class="form-check-label">{{ subfield.label.text }}</label>
+      </div>
+    {% endfor %}
+  </div>
+  <button type="submit" class="btn btn-success">Guardar</button>
+  <button type="button" class="btn btn-secondary" onclick="closeExpenseModal()">Cancel·lar</button>
+</form>

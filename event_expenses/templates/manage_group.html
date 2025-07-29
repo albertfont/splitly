@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h2 class="my-4">Participants del viatge "{{ event.name }}"</h2>
+
+  <table class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th></th>
+        <th>Nom</th>
+        <th>Persones</th>
+        <th>Correu electrònic</th>
+        <th>Accions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for p in participants %}
+      <tr>
+        <td>
+          <span class="badge" style="background-color: {{ participant_colors[p.id] }}">
+            <i class="fas fa-user me-1"></i>
+          </span> </td>
+        <td>{{ p.name }}</td>
+        <td>
+          {% for i in range(p.num_people) %}
+            <i class="fas fa-user me-1 text-secondary"></i>
+          {% endfor %}
+        </td>
+        <td>{{ p.email }}</td>
+        <td>
+          <form method="POST"
+                action="{{ url_for('delete_participant', token=event.token, participant_id=p.id) }}"
+                onsubmit="return confirm('Estàs segur que vols eliminar aquest participant?');"
+                class="d-inline">
+            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar participant">
+              <i class="fas fa-trash-alt"></i>Eliminar
+            </button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <button class="btn btn-primary" onclick="openParticipantModal()">
+    <i class="fas fa-user-plus"></i> Afegir participant
+  </button>
+</div>
+
+<!-- MODAL PARTICIPANT -->
+<div id="participantModal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Afegir participant</h5>
+        <button type="button" class="btn-close" onclick="closeParticipantModal()"></button>
+      </div>
+      <div class="modal-body" id="participantModalContent">
+        <form method="POST" action="{{ url_for('manage_group', event_token=event.token) }}">
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+          </div>
+          <div class="mb-3">
+            {{ form.num_people.label(class="form-label") }}
+            {{ form.num_people(class="form-control", min="1") }}
+            {% for error in form.num_people.errors %}
+              <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+          </div>
+          <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+          </div>
+          {{ form.event_id }}
+          <div class="mb-3">
+            {{ form.send_email(class="form-check-input") }}
+            {{ form.send_email.label(class="form-check-label") }}
+          </div>
+          <button type="submit" class="btn btn-success">Afegir</button>
+          <button type="button" class="btn btn-secondary" onclick="closeParticipantModal()">Cancel·lar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openParticipantModal() {
+    const modal = new bootstrap.Modal(document.getElementById('participantModal'));
+    modal.show();
+  }
+
+  function closeParticipantModal() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('participantModal'));
+    modal.hide();
+  }
+</script>
+{% endblock %}

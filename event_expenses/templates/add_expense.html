@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h2 class="my-4">Despeses de l'event "{{ event.name }}"</h2>
+
+  <button class="btn btn-primary mb-3" onclick="openExpenseModal()">
+    <i class="fas fa-plus"></i> Afegir nova despesa
+  </button>
+
+  <table class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>Pagat per</th>
+        <th>Descripció</th>
+        <th>Import</th>
+        <th>Participants</th>
+        <th class="text-center">Accions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for e in expenses %}
+      <tr>
+        <td>{{ participants[e.payer_id] }}</td>
+        <td>{{ e.description }}</td>
+        <td>{{ e.amount }} €</td>
+        <td>
+          {% for pid in e.split_between.split(',') %}
+            <span class="badge" style="background-color: {{ participant_colors[pid|int] }}">
+              <span title="{{ participants[pid|int] }}"><i class="fas fa-user me-1"></i>{{ participants[pid|int] }}</span>
+            </span>
+          {% endfor %}
+        </td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-outline-primary me-1" onclick="openExpenseModal({{ e.id }})">
+            <i class="fas fa-edit"></i>Editar
+          </button>
+          <form method="POST" action="{{ url_for('delete_expense', expense_id=e.id) }}" class="d-inline">
+            <button class="btn btn-sm btn-outline-danger" type="submit"
+                    onclick="return confirm('Segur que vols eliminar aquesta despesa?')">
+              <i class="fas fa-trash-alt"></i>Eliminar
+            </button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <th colspan="2" class="text-end">Total:</th>
+        <th>{{ "%.2f"|format(total_amount) }} €</th>
+        <th colspan="2"></th>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<!-- MODAL EXPENSE -->
+<div id="expenseModal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">Afegir o editar despesa</h5>
+        <button type="button" class="btn-close" onclick="closeExpenseModal()"></button>
+      </div>
+      <div class="modal-body" id="modalContent">
+        <!-- formulari injectat per JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openExpenseModal(expenseId = null) {
+  const modal = new bootstrap.Modal(document.getElementById('expenseModal'));
+  const content = document.getElementById('modalContent');
+  const title = document.getElementById('modalTitle');
+
+  if (expenseId) {
+    title.innerText = 'Editar despesa';
+  } else {
+    title.innerText = 'Afegir nova despesa';
+  }
+
+  fetch(`{{ url_for('expense_form_modal', event_token=event.token) }}${expenseId ? '?expense_id=' + expenseId : ''}`)
+    .then(res => res.text())
+    .then(html => {
+      content.innerHTML = html;
+      modal.show();
+    });
+}
+
+
+  function closeExpenseModal() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('expenseModal'));
+    modal.hide();
+  }
+
+  let allChecked = false;
+  function toggleAll() {
+    const checkboxes = document.querySelectorAll('.participant-checkbox');
+    allChecked = !allChecked;
+
+    checkboxes.forEach(cb => cb.checked = allChecked);
+
+    // Canvia el text del botó
+    const btn = document.querySelector('button[onclick="toggleAll()"]');
+    if (btn) {
+      btn.textContent = allChecked ? "Desmarcar tots" : "Marcar tots";
+    }
+  }
+</script>
+{% endblock %}

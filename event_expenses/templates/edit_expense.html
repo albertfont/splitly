@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Editar despesa</h2>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.description.label }} {{ form.description() }}
+    {{ form.amount.label }} {{ form.amount() }}
+    {{ form.payer_id.label }} {{ form.payer_id() }}
+    {{ form.split_between.label }}
+    {% for subfield in form.split_between %}
+      <label>{{ subfield() }} {{ subfield.label.text }}</label>
+    {% endfor %}
+    {{ form.submit(value='Actualitzar') }}
+  </form>
+
+  <a href="{{ url_for('add_expense', event_token=event.token) }}">← Tornar a despeses</a>
+{% endblock %}
