@@ -1,0 +1,30 @@
+# Entorn virtual
+venv/
+.env/
+.venv/
+
+# Fitxers de Python compilats
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Fitxers de logs i temporals
+*.log
+*.tmp
+
+# Configuració local
+config.ini
+
+# Base de dades i fitxers locals de Flask
+instance/
+
+# Fitxers de proves locals
+*.sqlite
+*.db
+
+# IDEs i editors
+.vscode/
+.idea/
+*.swp
+
