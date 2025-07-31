@@ -51,24 +51,6 @@ def confirm_token(token, expiration=3600):
         return False
     return email
 
-def send_token_email(email, token, event_name):
-    # Exemple: enviar confirmació
-    body_html = f"""
-    <h2>El teu event {event_name} ja està actiu!</h2>
-    <p>Pots accedir-hi amb el següent enllaç:</p>
-    <a href="{url_for('view_trip', token=token, _external=True)}" class="button">
-        Obrir el meu viatge
-    </a>
-    """
-
-    send_styled_email(
-        subject="🎉 El teu event Splitly està llest!",
-        recipients=[email],
-        body_html=body_html
-    )
-
-
-
 def send_styled_email(subject, recipients, body_html, body_text=None):
     """
     Envia un correu amb un estil uniforme.

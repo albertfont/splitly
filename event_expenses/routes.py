@@ -109,7 +109,7 @@ def create_new_event():
         )
 
         flash('Event creat! Revisa el teu correu per validar-lo.', 'success')
-        return redirect(url_for('access_event'))
+        return redirect(url_for('home'))
     # Si el formulari no s'ha enviat o hi ha errors, renderitzem el formulari
     if event_form.errors:
         for field, errors in event_form.errors.items():
@@ -132,7 +132,21 @@ def validate_event(validation_token):
         event.token = generate_event_token(length=8)
         event.validation_token = None  # Clear validation token after validation
         db.session.commit()
-        send_token_email(event.email, event.token, event.name)
+
+        body_html = f"""
+            <h2>El teu event {event.name} ja està actiu!</h2>
+            <p>Pots accedir-hi amb el següent enllaç:</p>
+            <a href="{url_for('event_summary', event_token=event.token, _external=True)}" class="button">
+                Obrir el meu viatge
+            </a>
+            """
+
+        send_styled_email(
+            subject="🎉 El teu event Splitly està llest!",
+            recipients=[email],
+            body_html=body_html
+        )
+
         flash('Event validat correctament!', 'success')
     else:
         flash('No s\'ha trobat l\'event corresponent.', 'warning')
