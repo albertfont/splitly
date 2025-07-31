@@ -4,7 +4,7 @@ from event_expenses.extensions import db
 from event_expenses.utils import send_styled_email
 from event_expenses.models import Event, Participant, Expense
 from event_expenses.forms import EventForm, ParticipantForm, ExpenseForm, AccessEventForm, EmailRecoveryForm
-from event_expenses.utils import generate_token, confirm_token, send_token_email, generate_event_token, participant_color
+from event_expenses.utils import generate_token, confirm_token, generate_event_token, participant_color
 from decimal import Decimal, ROUND_HALF_UP
 
 @app.route('/', methods=['GET', 'POST'])
@@ -134,15 +134,15 @@ def validate_event(validation_token):
         db.session.commit()
 
         body_html = f"""
-            <h2>El teu event {event.name} ja està actiu!</h2>
+            <h2>El teu Splitly {event.name} ja està actiu!</h2>
             <p>Pots accedir-hi amb el següent enllaç:</p>
             <a href="{url_for('event_summary', event_token=event.token, _external=True)}" class="button">
-                Obrir el meu viatge
+                Obrir el meu Splitly
             </a>
             """
 
         send_styled_email(
-            subject="🎉 El teu event Splitly està llest!",
+            subject="🎉 El teu Splitly està llest!",
             recipients=[email],
             body_html=body_html
         )
@@ -183,7 +183,20 @@ def manage_group(event_token):
         db.session.add(participant)
         db.session.commit()
         if form.send_email.data and participant.email:
-            send_token_email(participant.email, event.token, event.name)
+            body_html = f"""
+                <h2>T'han convidat a {event.name}</h2>
+                <p>Pots accedir-hi amb el següent enllaç:</p>
+                <a href="{url_for('event_summary', event_token=event.token, _external=True)}" class="button">
+                    Obrir l\'Splitly.
+                </a>
+                """
+
+            send_styled_email(
+                subject="🎉 T\'han convidat a un Splitly",
+                recipients=[participant.email],
+                body_html=body_html
+            )
+
             flash('Participant afegit i correu enviat.', 'success')
         else:
             flash('Participant afegit sense enviar correu.', 'success')
