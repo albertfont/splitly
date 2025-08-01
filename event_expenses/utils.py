@@ -62,66 +62,82 @@ def send_styled_email(subject, recipients, body_html, body_text=None):
     # Plantilla d'estil
     html_template = f"""
     <html>
-    <head>
-        <style>
-            body {{
-                font-family: Arial, sans-serif;
-                background-color: #f5f5f5;
-                padding: 20px;
-            }}
-            .email-container {{
-                max-width: 600px;
-                margin: auto;
-                background-color: white;
-                border-radius: 8px;
-                overflow: hidden;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            }}
-            .header {{
-                background-color: rgb(19 23 32) !important;
-                color: white;
-                text-align: center;
-                padding: 15px;
-            }}
-            .content {{
-                padding: 20px;
-                color: #333;
-            }}
-            .footer {{
-                background-color: #f0f0f0;
-                text-align: center;
-                font-size: 12px;
-                color: #666;
-                padding: 10px;
-            }}
-            a.button {{
-                display: inline-block;
-                background-color: #007bff;
-                color: white;
-                padding: 10px 20px;
-                margin-top: 15px;
-                border-radius: 5px;
-                text-decoration: none;
-            }}
-            a.button:hover {{
-                background-color: #0056b3;
-            }}
-        </style>
-    </head>
-    <body>
-        <div class="email-container">
-            <div class="header">
-                <img src="{ url_for('static_file', filename='logo_small.png', _external=True) }" alt="Splitly" style="max-height:40px;">
-            </div>
-            <div class="content">
-                {body_html}
-            </div>
-            <div class="footer">
-                Splitly &copy; 2025 · Gestiona les teves despeses compartides fàcilment
-            </div>
-        </div>
-    </body>
-    </html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      body {{
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background-color: #f5f7fa;
+        margin: 0;
+        padding: 20px;
+      }}
+      .email-container {{
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      }}
+      .header {{
+        background-color: #131720;
+        text-align: center;
+        padding: 25px;
+      }}
+      .header img {{
+        max-height: 45px;
+      }}
+      .content {{
+        padding: 30px 25px;
+        color: #333333;
+        line-height: 1.6;
+        text-align: center;
+      }}
+      .content h2 {{
+        margin-top: 0;
+        color: #131720;
+      }}
+      .button {{
+        display: inline-block;
+        background-color: #007bff;
+        color: white !important;
+        padding: 12px 28px;
+        margin-top: 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }}
+      .button:hover {{
+        background-color: #0056b3;
+      }}
+      .footer {{
+        background-color: #f2f2f2;
+        text-align: center;
+        font-size: 12px;
+        color: #888888;
+        padding: 15px;
+      }}
+      .footer a {{
+        color: #888888;
+        text-decoration: none;
+      }}
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <div class="header">
+        <img src="http://splitly.netpy.eu/static/logo_small.png" alt="Splitly">
+      </div>
+      <div class="content">
+      {body_html}
+      </div>
+      <div class="footer">
+        Splitly &copy; 2025 · Gestiona les teves despeses compartides fàcilment
+      </div>
+    </div>
+  </body>
+</html>
     """
 
     # Si no tenim versió text, en fem una bàsica
