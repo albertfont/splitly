@@ -50,12 +50,12 @@ def recover_events():
         body_html = f"""
         <h2>Els teus events actius a Splitly</h2>
         <p>Pots accedir-hi amb els següents enllaços:</p>
-        <ul>
+        <ul style="list-style: none;">
         """
         for event in events:
             body_html += f"""
             <li>
-                <strong>{event.name}</strong> - 
+                <strong>{event.name}</strong> - <pre>{event.token}</pre> - 
                 <a href="{url_for('event_summary', event_token=event.token, _external=True)}">
                     Accedir a l'event
                 </a>
