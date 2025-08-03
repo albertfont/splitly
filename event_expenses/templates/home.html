@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  .fullscreen-center {
+      display: flex;
+      justify-content: center;        /* Centrat horitzontal */
+      align-items: flex-start;        /* Ens alineem a la part superior */
+      height: 100vh;
+      padding-top: clamp(50px, 20vh, 200px);
+      /* 
+        clamp(min, preferit, max)
+        - Mai baixarà menys de 50px
+        - Normalment es centrarà sobre un 20% de la pantalla
+        - Mai baixarà més de 200px
+      */
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.85); /* lleuger blanc translúcid */
+      padding: 2rem;
+      border-radius: 15px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .form-container h2 {
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+  </style>
+<div class="fullscreen-center">
+  <div class="form-container">
+    <h2>Accedir al teu Splitly </h2>
+    <p class="mb-4">Introdueix el token d'accés per accedir a un event existent:</p>
+    <!-- Formulari d'accés -->
+    <form method="POST" action="{{ url_for('access_event') }}">
+        {{ access_form.csrf_token }}
+        {{ access_form.hidden_tag() }}
+        <div class="mb-3">
+          {{ access_form.token.label(class="visually-hidden") }}
+          {{ access_form.token(class="form-control", placeholder="Token d'access") }}
+        </div>
+        <div class="mb-3">
+          {{ access_form.submit(class="btn btn-primary") }}
+        </div>
+      </form>
+  </div>
+ </div> 
+
+
+{% endblock %}

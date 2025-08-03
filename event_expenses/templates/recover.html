@@ -1,0 +1,14 @@
+
+    <div class="card-body">
+      <form method="POST" action="{{ url_for('recover_events') }}">
+        {{ recover_form.hidden_tag() }}
+        <div class="mb-3">
+          {{ recover_form.email.label(class="visually-hidden") }}
+          {{ recover_form.email(class="form-control", placeholder="Correu electrònic", type="email") }}
+        </div>
+        {{ recover_form.submit(class="btn btn-primary", type="submit") }}
+        <a href="{{ url_for('home') }}" class="btn btn-secondary ms-2">
+          <i class="fas fa-arrow-left"></i> Cancel·lar
+        </a>
+      </form>
+    </div>

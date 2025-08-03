@@ -7,12 +7,11 @@ from event_expenses.forms import EventForm, ParticipantForm, ExpenseForm, Access
 from event_expenses.utils import generate_token, confirm_token, generate_event_token, participant_color
 from decimal import Decimal, ROUND_HALF_UP
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
 def home():
     access_form = AccessEventForm()
-    recover_form = EmailRecoveryForm()
 
-    return render_template('access_event.html', access_form=access_form, recover_form=recover_form)
+    return render_template('home.html', access_form=access_form, show_background=True)
 
 @app.route('/static/<path:filename>')
 def static_file(filename):
@@ -36,7 +35,7 @@ def access_event():
     return redirect(url_for('home'))
 
 
-@app.route('/recover', methods=['POST'])
+@app.route('/recover', methods=['GET', 'POST'])
 def recover_events():
     recover_form = EmailRecoveryForm()
     if recover_form.validate_on_submit():
@@ -76,8 +75,15 @@ def recover_events():
         )
         flash('T\'hem enviat un correu amb els teus events registrats.', 'success')
         return redirect(url_for('home'))
+    
+    # Si el formulari no s'ha enviat o hi ha errors, renderitzem el formulari
+    if recover_form.errors:
+        for field, errors in recover_form.errors.items():
+            for error in errors:
+                flash(f'Error en {field}: {error}', 'danger')  
+        return redirect(url_for('home'))
 
-    return redirect(url_for('home'))
+    return render_template('recover.html', recover_form=recover_form)
 
 @app.route('/create_event', methods=['GET', 'POST'])
 def create_new_event():
@@ -110,11 +116,13 @@ def create_new_event():
 
         flash('Event creat! Revisa el teu correu per validar-lo.', 'success')
         return redirect(url_for('home'))
+    
     # Si el formulari no s'ha enviat o hi ha errors, renderitzem el formulari
     if event_form.errors:
         for field, errors in event_form.errors.items():
             for error in errors:
-                flash(f'Error en {field}: {error}', 'danger')   
+                flash(f'Error en {field}: {error}', 'danger')  
+        return redirect(url_for('home')) 
     
     return render_template('create_event.html', event_form=event_form)
 
