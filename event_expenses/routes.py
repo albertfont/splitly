@@ -55,7 +55,7 @@ def recover_events():
         for event in events:
             body_html += f"""
             <li>
-                <strong>{event.name}</strong> - <pre>{event.token}</pre> - 
+                <strong>{event.name}</strong> - <code>{event.token}</code> - 
                 <a href="{url_for('event_summary', event_token=event.token, _external=True)}">
                     Accedir a l'event
                 </a>
