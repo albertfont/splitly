@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SubmitField, FloatField, BooleanField, SelectField, SelectMultipleField, HiddenField
 from wtforms.validators import DataRequired, Email, Length, NumberRange, Optional
+from flask_wtf.file import FileField, FileAllowed
+
 from wtforms.widgets import ListWidget, CheckboxInput
 
 class EventForm(FlaskForm):
@@ -28,6 +30,8 @@ class ExpenseForm(FlaskForm):
     amount = FloatField('Import (€)', validators=[DataRequired(), NumberRange(min=0.01)])
     payer_id = SelectField('Pagat per', coerce=int, validators=[DataRequired()])
     split_between = MultiCheckboxField('Compartit entre', coerce=int, choices=[], validators=[Optional()])
+    date = StringField('Data', validators=[Optional()])
+    receipt_image = FileField('Foto de la factura', validators=[Optional(), FileAllowed(['jpg', 'png', 'jpeg'])])
     submit = SubmitField('Afegir despesa')
 
 class AccessEventForm(FlaskForm):

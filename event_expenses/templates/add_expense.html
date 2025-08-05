@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container">
-  <h2 class="my-4">Despeses de l'event "{{ event.name }}"</h2>
+  <h2 class="my-4">Despeses de "{{ event.name }}"</h2>
 
   <button class="btn btn-primary mb-3" onclick="openExpenseModal()">
     <i class="fas fa-plus"></i> Afegir nova despesa
@@ -13,7 +13,8 @@
         <th>Pagat per</th>
         <th>Descripció</th>
         <th>Import</th>
-        <th>Participants</th>
+        <th>Repartit entre</th>
+        <th>Factura</th>
         <th class="text-center">Accions</th>
       </tr>
     </thead>
@@ -29,6 +30,15 @@
               <span title="{{ participants[pid|int] }}"><i class="fas fa-user me-1"></i>{{ participants[pid|int] }}</span>
             </span>
           {% endfor %}
+        </td>
+        <td>
+        {% if e.receipt_image %}
+            <a href="{{ url_for('uploads', filename=e.receipt_image) }}" target="_blank">
+                <i class="fa fa-file-image"></i> Veure factura
+            </a>
+        {% else %}
+            -
+        {% endif %}
         </td>
         <td class="text-center">
           <button class="btn btn-sm btn-outline-primary me-1" onclick="openExpenseModal({{ e.id }})">

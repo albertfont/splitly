@@ -10,6 +10,7 @@ class Config:
     SECRET_KEY = config.get('DEFAULT', 'SECRET_KEY', fallback=os.environ.get('SECRET_KEY', 'default_secret_key'))
     SQLALCHEMY_DATABASE_URI = config.get('DEFAULT', 'DATABASE_URI', fallback=os.environ.get('DATABASE_URI', 'sqlite:///trip_expenses.sqlite'))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    UPLOAD_FOLDER = config.get('DEFAULT', 'UPLOAD_FOLDER', fallback=os.environ.get('UPLOAD_FOLDER', './uploads'))
 
     MAIL_SERVER = config.get('MAIL', 'SERVER', fallback=os.environ.get('MAIL_SERVER', 'smtp.gmail.com'))
     MAIL_PORT = config.get('MAIL', 'PORT', fallback=os.environ.get('MAIL_PORT', 587))

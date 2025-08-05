@@ -30,3 +30,5 @@ class Expense(db.Model):
     date = db.Column(db.DateTime, default=datetime.now)
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
     split_between = db.Column(db.String(512), nullable=False)
+    receipt_image = db.Column(db.String(200), nullable=True)
+

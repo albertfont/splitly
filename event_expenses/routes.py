@@ -6,6 +6,8 @@ from event_expenses.models import Event, Participant, Expense
 from event_expenses.forms import EventForm, ParticipantForm, ExpenseForm, AccessEventForm, EmailRecoveryForm
 from event_expenses.utils import generate_token, confirm_token, generate_event_token, participant_color
 from decimal import Decimal, ROUND_HALF_UP
+from werkzeug.utils import secure_filename
+import os
 
 @app.route('/', methods=['GET'])
 def home():
@@ -17,6 +19,11 @@ def home():
 def static_file(filename):
     print(f"Serving static file: {filename}")
     return send_from_directory(app.static_folder, filename)
+
+@app.route('/uploads/<path:filename>')
+def uploads(filename):
+    print(f"Serving uploaded {app.config['UPLOAD_FOLDER']}/{filename}")
+    return send_from_directory("./uploads", filename)
 
 @app.route('/access', methods=['POST'])
 def access_event():
@@ -236,17 +243,30 @@ def add_expense(event_token):
     form.split_between.choices = [(p.id, p.name) for p in participants]
 
     if form.validate_on_submit():
+        filename = None
+        print("Form data:", form.data)
+        if form.receipt_image.data:
+            filename = secure_filename(form.receipt_image.data.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            form.receipt_image.data.save(file_path)
+
         expense = Expense(
             description=form.description.data,
             amount=form.amount.data,
             payer_id=form.payer_id.data,
             split_between=','.join(str(pid) for pid in form.split_between.data),
-            event_id=event.id
+            event_id=event.id,
+            receipt_image=filename
         )
         db.session.add(expense)
         db.session.commit()
         flash('Despesa afegida correctament.', 'success')
         return redirect(url_for('add_expense', event_token=event.token))
+    
+    if form.errors:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'Error en {field}: {error}', 'danger')
     
     participant_colors = {
         p.id: participant_color(p.name or str(p.id))
@@ -369,12 +389,19 @@ def edit_expense(expense_id):
         form.description.data = expense.description
         form.amount.data = expense.amount
         form.payer_id.data = expense.payer_id
+        form.receipt_image.data = expense.receipt_image
         form.split_between.data = [int(pid) for pid in expense.split_between.split(',')]
 
     if form.validate_on_submit():
         expense.description = form.description.data
         expense.amount = form.amount.data
         expense.payer_id = form.payer_id.data
+        expense.receipt_image = form.receipt_image.data
+        if form.receipt_image.data:
+            filename = secure_filename(form.receipt_image.data.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            form.receipt_image.data.save(file_path)
+            expense.receipt_image = filename
         expense.split_between = ','.join(str(pid) for pid in form.split_between.data)
         db.session.commit()
         flash('Despesa actualitzada.', 'success')
@@ -441,30 +468,3 @@ def expense_form_modal(event_token):
         return render_template('partials/expense_form.html', form=form, event=event, edit=True, expense_id=expense.id)
     else:
         return render_template('partials/expense_form.html', form=form, event=event, edit=False)
-
-
-### funcions que no es fan servir 
-
-# @app.route('/expense/<int:expense_id>/edit_modal')
-# def edit_expense_modal(expense_id):
-#     expense = Expense.query.get_or_404(expense_id)
-#     event = Event.query.get_or_404(expense.event_id)
-#     form = ExpenseForm()
-
-#     participants = Participant.query.filter_by(event_id=event.id).all()
-#     form.payer_id.choices = [(p.id, p.name) for p in participants]
-#     form.split_between.choices = [(p.id, p.name) for p in participants]
-
-#     form.description.data = expense.description
-#     form.amount.data = expense.amount
-#     form.payer_id.data = expense.payer_id
-#     form.split_between.data = [int(pid) for pid in expense.split_between.split(',')]
-
-#     return render_template('partials/expense_form.html', form=form, event=event, expense=expense)
-
-# @app.route('/event/<int:event_id>/add_participant_modal')
-# def add_participant_modal(event_id):
-#     event = Event.query.get_or_404(event_id)
-#     form = ParticipantForm()
-#     form.event_id.data = event.id
-#     return render_template('partials/participant_form.html', form=form, event=event)
